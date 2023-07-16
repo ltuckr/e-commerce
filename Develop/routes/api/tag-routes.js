@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   // find a single tag by its `id`
-  // be sure to include its associated Product data
+  // include Product data
   try {
     const tagByID = await Tag.findOne({
       where: {
@@ -46,6 +46,14 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
   // create a new tag
+  try {
+    const newTag = await Tag.create({
+      tag_name: req.body.tag_name,
+    });
+    res.json(newTag);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.put('/:id', (req, res) => {
