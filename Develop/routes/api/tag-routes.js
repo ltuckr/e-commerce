@@ -16,13 +16,32 @@ router.get('/', (req, res) => {
     });
     res.json(tags);
   } catch (error) {
-    res.status(507).json(error);
+    res.status(500).json(error);
   }
 });
 
 router.get('/:id', (req, res) => {
   // find a single tag by its `id`
   // be sure to include its associated Product data
+  try {
+    const tagByID = await Tag.findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        {
+          model: Product,
+        },
+      ],
+    });
+    if (tagByID) {
+      res.json(tagByID);
+    } else {
+      res.status(404).json({ error: "tag not found" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.post('/', (req, res) => {
