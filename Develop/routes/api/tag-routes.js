@@ -88,7 +88,7 @@ router.delete('/:id', (req, res) => {
       res.status(404).json({ error: "tag not found" });
     }
   } catch (error) {
-    res.status(510).json(error);
+    res.status(500).json(error);
   }
 });
 
