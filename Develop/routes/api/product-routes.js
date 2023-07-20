@@ -10,35 +10,61 @@ router.get('/', (req, res) => {
     const products = await Product.findAll({
       include: [
         {
-          model: Category,
+          model: Category
         },
         {
-          model: Tag,
+          model: Tag
         },
       ],
     });
     res.json(products);
   } catch (error) {
-    res.status(504).json(error);
+    res.status(500).json(error);
   }
 });
 
-// get one product
+// get one product; find single product by ID
 router.get('/:id', (req, res) => {
-  // find a single product by its `id`
-  // be sure to include its associated Category and Tag data
+  try {
+    const productByID = await Product.findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        {
+          model: Category
+        },
+        {
+          model: Tag
+        },
+      ],
+    });
+    if (productByID) {
+      res.json(productByID);
+    } else {
+      res.status(404).json({ error: "No product found" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
+
 
 // create new product
 router.post('/', (req, res) => {
-  /* req.body should look like this...
-    {
-      product_name: "Basketball",
-      price: 200.00,
-      stock: 3,
-      tagIds: [1, 2, 3, 4]
+  try {
+    const product = await Product.create(req.body);
+    if (req.body.tagIds && req.body.tagIds.length) {
+      await product.addTags(req.body.tagIds);
+      product.tags = await product.getTags();
     }
-  */
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "error found" });
+  }
+});
+
   Product.create(req.body)
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
@@ -57,9 +83,8 @@ router.post('/', (req, res) => {
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((err) => {
       console.log(err);
-      res.status(400).json(err);
+      res.status(404).json(err);
     });
-});
 
 // update product
 router.put('/:id', (req, res) => {
@@ -101,13 +126,27 @@ router.put('/:id', (req, res) => {
       return res.json(product);
     })
     .catch((err) => {
-      // console.log(err);
-      res.status(400).json(err);
+      res.status(404).json(err);
     });
 });
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  try {
+    const deletedProduct = await Product.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (deletedProduct) {
+      res.json(deletedProduct);
+    } else {
+      res.status(404).json({ error: "No product found" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
+
 
 module.exports = router;
