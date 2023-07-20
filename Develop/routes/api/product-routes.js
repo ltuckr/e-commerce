@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // find one product by its `id` value
   try {
-    const productById = await Product.findOne({
+    const productByID = await Product.findOne({
       where: {
         id: req.params.id,
       },
@@ -32,8 +32,8 @@ router.get('/:id', async (req, res) => {
         },
       ],
     });
-    if (productById) {
-      res.json(productById);
+    if (productByID) {
+      res.json(productByID);
     } else {
       res.status(404).json({ error: "No product found" });
     }
@@ -60,10 +60,10 @@ router.put('/:id', async (req, res) => {
         id: req.params.id,
       },
     });
-    if (updatedProduct[0] === 1) {
-      res.json({ message: "Product updated successfully." });
+    if (updatedProduct) {
+      res.json(updatedProduct);
     } else {
-      res.status(404).json({ error: "No product found" });
+      res.status(404).json({ error: "No product with this ID" });
     }
   } catch (error) {
     res.status(500).json(error);
@@ -79,34 +79,13 @@ router.delete('/:id', async (req, res) => {
       },
     });
     if (deletedProduct) {
-      res.json({ message: "Product deleted." });
+      res.json({ message: "Product deleted successfully." });
     } else {
-      res.status(404).json({ error: "No product found." });
+      res.status(404).json({ error: "No product with this ID" });
     }
   } catch (error) {
     res.status(500).json(error);
   }
 });
-
-module.exports = router;
-
-router.delete('/:id', (req, res) => {
-  // delete one product by its `id` value
-  try {
-    const deletedProduct = await Product.destroy({
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (deletedProduct) {
-      res.json(deletedProduct);
-    } else {
-      res.status(404).json({ error: "No product found" });
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
 
 module.exports = router;
