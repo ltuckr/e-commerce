@@ -51,16 +51,46 @@ router.post('/', (req, res) => {
     });
     res.json(newCategory);
   } catch (error) {
-    res.status(502).json(error);
+    res.status(500).json(error);
   }
 });
 
 router.put('/:id', (req, res) => {
   // update a category by its `id` value
+  try {
+    const updatedCategory = await Category.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (updatedCategory) {
+      res.json(updatedCategory);
+    } else {
+      res.status(404).json({ error: "No category by with this ID" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
+
 
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
+  try {
+    const deletedCategory = await Category.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (deletedCategory) {
+      res.json(deletedCategory);
+    } else {
+      res.status(404).json({ error: "No category with this ID" });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+  
 });
 
 module.exports = router;
