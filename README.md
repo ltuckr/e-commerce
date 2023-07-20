@@ -12,6 +12,7 @@ Can be tested with Insomnia.
 ![5cd032ede057c3de7e74a12f91c9af1c](https://github.com/ltuckr/e-commerce/assets/128933116/9993228c-28fb-4432-b410-130bcffd72b5)
 
 ## Walkthrough video
+https://drive.google.com/file/d/1gkyu9Ip6wIn3QkQiGSTCnh4D32s9nSe_/view
 
 ## Credits
 ahacker @ askbcs 
